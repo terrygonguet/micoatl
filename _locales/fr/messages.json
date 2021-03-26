@@ -1,0 +1,11 @@
+{
+	"extensionName": {
+		"message": "Project Mixcoatl",
+		"description": "Name of the extension."
+	},
+
+	"extensionDescription": {
+		"message": "Explorez et construisez votre maison quelque part sur le web !",
+		"description": "Description of the extension."
+	}
+}
