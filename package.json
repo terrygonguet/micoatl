@@ -1,0 +1,23 @@
+{
+	"name": "mixcoatl",
+	"version": "0.1.0",
+	"description": "Explore and make your home somewhere on the web!",
+	"scripts": {
+		"dev": "web-ext run --bc",
+		"build": "web-ext build"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/terrygonguet/micoatl.git"
+	},
+	"keywords": [],
+	"author": "Terry Gonguet <terry@gonguet.com> (https://terry.gonguet.com)",
+	"license": "SEE LICENSE IN LICENSE",
+	"bugs": {
+		"url": "https://github.com/terrygonguet/mixcoatl/issues"
+	},
+	"homepage": "https://github.com/terrygonguet/mixcoatl#readme",
+	"dependencies": {
+		"@types/firefox-webext-browser": "^82.0.0"
+	}
+}

@@ -13,7 +13,15 @@
 		"128": "icons/milky-128.png"
 	},
 
-	"content_scripts": [],
+	"background": {
+		"scripts": ["lib/browser-polyfill.min.js", "background.js"]
+	},
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": ["lib/browser-polyfill.min.js", "content.js"]
+		}
+	],
 
 	"developer": {
 		"name": "Terry Gonguet",
