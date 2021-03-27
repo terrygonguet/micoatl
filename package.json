@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"description": "Explore and make your home somewhere on the web!",
 	"scripts": {
-		"dev": "web-ext run --bc",
+		"dev": "web-ext run --bc -s src -u news.ycombinator.com",
 		"build": "web-ext build"
 	},
 	"repository": {
