@@ -61,6 +61,12 @@ class Popup extends HTMLElement {
 		})
 		this.shadowRoot.append(resizeV)
 
+		const close = document.createElement("button")
+		close.classList.add("close-handle")
+		close.textContent = "×"
+		close.addEventListener("click", () => this.dispatchEvent(new CustomEvent("close")))
+		this.shadowRoot.append(close)
+
 		const container = document.createElement("div")
 		container.id = "container"
 		this.shadowRoot.append(container)
@@ -134,7 +140,8 @@ class Popup extends HTMLElement {
 				cursor: pointer;
 				color: white;
 			}
-			.pin-handle {
+			.pin-handle,
+			.close-handle {
 				width: 1rem;
 				height: 1rem;
 			}
@@ -156,6 +163,10 @@ class Popup extends HTMLElement {
 				height: 10px;
 				${vertical == "top" ? "bottom" : "top"}: -5px;
 				cursor: ns-resize;
+			}
+			.close-handle {
+				${vertical}: 0;
+				${horizontal}: 0;
 			}
 		`
 	}

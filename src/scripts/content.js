@@ -39,12 +39,19 @@ async function start() {
 			else heightStore.set(size)
 		},
 	)
+	popup.addEventListener("close", () => showStore.set(false))
+
 	widthStore.subscribe(popupWidth => popup.setAttribute("width", popupWidth))
 	heightStore.subscribe(popupHeight => popup.setAttribute("height", popupHeight))
 	verticalStore.subscribe(popupVertical => popup.setAttribute("vertical", popupVertical))
 	horizontalStore.subscribe(popupHorizontal => popup.setAttribute("horizontal", popupHorizontal))
 	showStore.subscribe(showStore => (popup.style.display = showStore ? "block" : "none"))
+
 	document.body.append(popup)
+
+	browser.storage.onChanged.addListener(changes => {
+		if (changes.popupShow?.newValue) showStore.set(true)
+	})
 }
 
 if ("customElements" in globalThis) start()
