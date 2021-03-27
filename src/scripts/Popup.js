@@ -34,10 +34,10 @@ class Popup extends HTMLElement {
 		const resizeH = document.createElement("button")
 		resizeH.classList.add("resize-handle-horizontal")
 		makeResizeHandle(resizeH, e => {
-			const { pageX } = e,
+			const { clientX } = e,
 				{ left, right } = this.getBoundingClientRect(),
 				horizontal = this.getAttribute("horizontal") ?? "right",
-				width = horizontal == "left" ? pageX - left : right - pageX
+				width = horizontal == "left" ? clientX - left : right - clientX
 			this.dispatchEvent(
 				new CustomEvent("resize", {
 					detail: { direction: "horizontal", size: clamp(width, 50, innerWidth - 50) },
@@ -49,10 +49,10 @@ class Popup extends HTMLElement {
 		const resizeV = document.createElement("button")
 		resizeV.classList.add("resize-handle-vertical")
 		makeResizeHandle(resizeV, e => {
-			const { pageY } = e,
+			const { clientY } = e,
 				{ top, bottom } = this.getBoundingClientRect(),
 				vertical = this.getAttribute("vertical") ?? "top",
-				height = vertical == "top" ? pageY - top : bottom - pageY
+				height = vertical == "top" ? clientY - top : bottom - clientY
 			this.dispatchEvent(
 				new CustomEvent("resize", {
 					detail: { direction: "vertical", size: clamp(height, 50, innerHeight - 50) },
@@ -107,7 +107,7 @@ class Popup extends HTMLElement {
 				font-family: sans-serif;
 			}
 			:host {
-				position: absolute;
+				position: fixed;
 				${vertical}: 0;
 				${horizontal}: 0;
 				width: ${width}px;
