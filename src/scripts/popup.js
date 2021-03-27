@@ -1,5 +1,5 @@
 /**
- * @typedef {CustomEvent<[string, string]>} PinEvent
+ * @typedef {CustomEvent<{ vertical: "top" | "bottom", horizontal: "left" | "right" }>} PinEvent
  */
 
 /**
@@ -11,9 +11,6 @@ class Popup extends HTMLElement {
 		super()
 
 		this.attachShadow({ mode: "open" })
-
-		const vertical = this.getAttribute("vertical") ?? "top",
-			horizontal = this.getAttribute("horizontal") ?? "right"
 
 		const pinHandles = [
 			[document.createElement("button"), "top", "left", ""],
@@ -29,7 +26,7 @@ class Popup extends HTMLElement {
 			handle.style.transform = scale
 			handle.id = `pin-handle-${vertical}-${horizontal}`
 			handle.addEventListener("click", () =>
-				this.dispatchEvent(new CustomEvent("pin", { detail: [vertical, horizontal] })),
+				this.dispatchEvent(new CustomEvent("pin", { detail: { vertical, horizontal } })),
 			)
 			this.shadowRoot.append(handle)
 		}
@@ -64,6 +61,13 @@ class Popup extends HTMLElement {
 		})
 		this.shadowRoot.append(resizeV)
 
+		const container = document.createElement("div")
+		container.id = "container"
+		this.shadowRoot.append(container)
+
+		const slot = document.createElement("slot")
+		container.append(slot)
+
 		Popup.updateStyles(this)
 	}
 
@@ -83,8 +87,8 @@ class Popup extends HTMLElement {
 	 * @param {HTMLElement} elem
 	 */
 	static updateStyles(elem) {
-		const width = elem.getAttribute("width") ?? "300px",
-			height = elem.getAttribute("height") ?? "300px",
+		const width = elem.getAttribute("width") ?? "300",
+			height = elem.getAttribute("height") ?? "300",
 			vertical = elem.getAttribute("vertical") ?? "top",
 			horizontal = elem.getAttribute("horizontal") ?? "right"
 
@@ -92,12 +96,21 @@ class Popup extends HTMLElement {
 		elem.shadowRoot.append(style)
 
 		style.textContent = css`
+			* {
+				box-sizing: border-box;
+				font-family: sans-serif;
+			}
 			:host {
 				position: absolute;
 				${vertical}: 0;
 				${horizontal}: 0;
-				width: ${width};
-				height: ${height};
+				width: ${width}px;
+				height: ${height}px;
+				margin: 0.25rem;
+				border: 1px solid black;
+				z-index: 999;
+				color: white;
+
 				background-color: black;
 				background-image: radial-gradient(white, rgba(255, 255, 255, 0.2) 2px, transparent 40px),
 					radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 30px),
@@ -105,11 +118,13 @@ class Popup extends HTMLElement {
 					radial-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1) 2px, transparent 30px);
 				background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
 				background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
-				margin: 0.25rem;
-				border: 1px solid black;
-				padding: 0.5rem;
-				z-index: 999;
-				color: white;
+			}
+			#container {
+				padding: 0.25rem;
+				display: flex;
+				flex-direction: column;
+				height: 100%;
+				overflow-y: auto;
 			}
 			button {
 				position: absolute;
