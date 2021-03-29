@@ -16,12 +16,24 @@
 
 	"permissions": ["storage"],
 	"background": {
-		"scripts": ["lib/browser-polyfill.min.js", "scripts/background.js"]
+		"scripts": [
+			"lib/browser-polyfill.min.js",
+			"scripts/utils.js",
+			"scripts/Resource.js",
+			"scripts/Host.js",
+			"scripts/background.js"
+		]
 	},
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
-			"js": ["lib/browser-polyfill.min.js", "scripts/utils.js", "scripts/popup.js", "scripts/content.js"]
+			"js": [
+				"lib/browser-polyfill.min.js",
+				"scripts/utils.js",
+				"scripts/Resource.js",
+				"scripts/Popup.js",
+				"scripts/content.js"
+			]
 		}
 	],
 	"browser_action": {

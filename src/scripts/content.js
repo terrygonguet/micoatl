@@ -4,14 +4,14 @@ async function start() {
 			popupHorizontal: "right",
 			popupWidth: 300,
 			popupHeight: 400,
-			popupShow: true,
+			popupHide: false,
 		},
-		[widthStore, heightStore, verticalStore, horizontalStore, showStore] = await Promise.all([
-			localStore("popupWidth"),
-			localStore("popupHeight"),
-			localStore("popupVertical"),
-			localStore("popupHorizontal"),
-			localStore("popupShow"),
+		[widthStore, heightStore, verticalStore, horizontalStore, hideStore] = await Promise.all([
+			localStore("popupWidth", defaultSettings.popupWidth),
+			localStore("popupHeight", defaultSettings.popupHeight),
+			localStore("popupVertical", defaultSettings.popupVertical),
+			localStore("popupHorizontal", defaultSettings.popupHorizontal),
+			localStore("popupHide", defaultSettings.popupHide),
 		])
 
 	try {
@@ -39,19 +39,21 @@ async function start() {
 			else heightStore.set(size)
 		},
 	)
-	popup.addEventListener("close", () => showStore.set(false))
+	popup.addEventListener("close", () => hideStore.set(true))
 
 	widthStore.subscribe(popupWidth => popup.setAttribute("width", popupWidth))
 	heightStore.subscribe(popupHeight => popup.setAttribute("height", popupHeight))
 	verticalStore.subscribe(popupVertical => popup.setAttribute("vertical", popupVertical))
 	horizontalStore.subscribe(popupHorizontal => popup.setAttribute("horizontal", popupHorizontal))
-	showStore.subscribe(showStore => (popup.style.display = showStore ? "block" : "none"))
+	hideStore.subscribe(popupHide => popup.setAttribute("hidden", popupHide))
 
 	document.body.append(popup)
 
 	browser.storage.onChanged.addListener(changes => {
-		if (changes.popupShow?.newValue) showStore.set(true)
+		if (changes.popupHide?.newValue == false) hideStore.set(false)
 	})
+
+	const port = browser.runtime.connect()
 }
 
 if ("customElements" in globalThis) start()

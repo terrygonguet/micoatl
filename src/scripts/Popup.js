@@ -86,7 +86,7 @@ class Popup extends HTMLElement {
 	}
 
 	static get observedAttributes() {
-		return ["width", "height", "vertical", "horizontal"]
+		return ["width", "height", "vertical", "horizontal", "hidden"]
 	}
 
 	/**
@@ -96,7 +96,8 @@ class Popup extends HTMLElement {
 		const width = elem.getAttribute("width") ?? "300",
 			height = elem.getAttribute("height") ?? "300",
 			vertical = elem.getAttribute("vertical") ?? "top",
-			horizontal = elem.getAttribute("horizontal") ?? "right"
+			horizontal = elem.getAttribute("horizontal") ?? "right",
+			hidden = (elem.getAttribute("hidden") ?? "true") == "true"
 
 		let style = elem.shadowRoot.querySelector("style") ?? document.createElement("style")
 		elem.shadowRoot.append(style)
@@ -112,6 +113,7 @@ class Popup extends HTMLElement {
 				${horizontal}: 0;
 				width: ${width}px;
 				height: ${height}px;
+				display: ${hidden ? "none" : "block"};
 				margin: 0.25rem;
 				border: 1px solid black;
 				z-index: 999;
