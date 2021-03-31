@@ -1,25 +1,4 @@
 async function start() {
-	const defaultSettings = {
-			popupVertical: "top",
-			popupHorizontal: "right",
-			popupWidth: 300,
-			popupHeight: 400,
-			popupHide: false,
-		},
-		[widthStore, heightStore, verticalStore, horizontalStore, hideStore] = await Promise.all([
-			localStore("popupWidth", defaultSettings.popupWidth),
-			localStore("popupHeight", defaultSettings.popupHeight),
-			localStore("popupVertical", defaultSettings.popupVertical),
-			localStore("popupHorizontal", defaultSettings.popupHorizontal),
-			localStore("popupHide", defaultSettings.popupHide),
-		])
-
-	try {
-		customElements.define("mixcoatl-popup", Popup)
-	} catch (err) {
-		location.reload()
-	}
-
 	const popup = document.createElement("mixcoatl-popup")
 	popup.addEventListener(
 		"pin",
@@ -40,18 +19,25 @@ async function start() {
 		},
 	)
 	popup.addEventListener("close", () => hideStore.set(true))
-
-	widthStore.subscribe(popupWidth => popup.setAttribute("width", popupWidth))
-	heightStore.subscribe(popupHeight => popup.setAttribute("height", popupHeight))
-	verticalStore.subscribe(popupVertical => popup.setAttribute("vertical", popupVertical))
-	horizontalStore.subscribe(popupHorizontal => popup.setAttribute("horizontal", popupHorizontal))
-	hideStore.subscribe(popupHide => popup.setAttribute("hidden", popupHide))
-
+	const [widthStore, heightStore, verticalStore, horizontalStore, hideStore] = await syncPropsWithLocalStore(
+		popup,
+		["popupWidth", "width", 300],
+		["popupHeight", "height", 400],
+		["popupVertical", "vertical", "top"],
+		["popupHorizontal", "horizontal", "right"],
+		["popupHide", "hidden", false],
+	)
 	document.body.append(popup)
 
 	browser.storage.onChanged.addListener(changes => {
-		if (changes.popupHide?.newValue == false) hideStore.set(false)
+		const newValue = changes.popupHide?.newValue
+		if (newValue != undefined) hideStore.set(newValue)
 	})
+
+	const place = document.createElement("mixcoatl-place")
+	widthStore.subscribe(value => place.setAttribute("width", value))
+	heightStore.subscribe(value => place.setAttribute("height", value))
+	popup.append(place)
 
 	const port = browser.runtime.connect()
 }

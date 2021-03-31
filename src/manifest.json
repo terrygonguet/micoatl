@@ -32,6 +32,7 @@
 				"scripts/utils.js",
 				"scripts/Resource.js",
 				"scripts/Popup.js",
+				"scripts/Place.js",
 				"scripts/content.js"
 			]
 		}
@@ -46,6 +47,7 @@
 		},
 		"default_title": "__MSG_extensionName__"
 	},
+	"web_accessible_resources": ["sprites/*.png"],
 
 	"developer": {
 		"name": "Terry Gonguet",

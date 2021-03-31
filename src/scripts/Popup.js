@@ -128,7 +128,6 @@ class Popup extends HTMLElement {
 				background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
 			}
 			#container {
-				padding: 0.25rem;
 				display: flex;
 				flex-direction: column;
 				height: 100%;
@@ -189,3 +188,5 @@ function makeResizeHandle(elem, cb) {
 		window.addEventListener("mouseup", cleanup)
 	})
 }
+
+define("mixcoatl-popup", Popup)

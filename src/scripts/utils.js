@@ -88,11 +88,42 @@ function writable(value, start = noop) {
 	return { set, update, subscribe }
 }
 
+/**
+ * @param {number} a
+ * @param {number} b
+ */
+function modWrap(a, b) {
+	return (a + Math.ceil(-a / b) * b) % b
+}
+
+/**
+ * @template T, U
+ * @param {T[]} a
+ * @param {U[]} b
+ * @returns {[T, U][]}
+ */
+function zip(a, b) {
+	return a.map((k, i) => [k, b[modWrap(i, b.length)]])
+}
+
 async function localStore(key, defaultValue) {
 	const local = await browser.storage.local.get({ [key]: defaultValue }),
 		store = writable(local[key])
 	store.subscribe(nextValue => browser.storage.local.set({ [key]: nextValue }))
 	return store
+}
+
+/**
+ * Property are in the form `["localStoreName", "attributeName", defaultValue]`
+ * @param {HTMLElement} elem
+ * @param  {...[string, string, any]} props
+ */
+async function syncPropsWithLocalStore(elem, ...props) {
+	const promises = props.map(([key, _, defaultValue]) => localStore(key, defaultValue))
+	const stores = await Promise.all(promises)
+	const zipped = zip(stores, props)
+	zipped.forEach(([store, [key, attr]]) => store.subscribe(value => elem.setAttribute(attr, value)))
+	return stores
 }
 
 /**
@@ -150,6 +181,15 @@ function randInt(min, max, prng = Math.random) {
 	min = Math.ceil(min)
 	max = Math.floor(max)
 	return Math.floor(prng() * (max - min) + min)
+}
+
+/**
+ * @template T
+ * @param {T[]} arr
+ * @param {() => number} prng
+ */
+function randItem(arr, prng = Math.random) {
+	return arr[randInt(0, arr.length, prng)]
 }
 
 /**
@@ -212,3 +252,18 @@ function textColor(backgroundColor) {
 }
 
 const css = noopTag
+
+/**
+ * @param {string} tagName
+ * @param {HTMLElement} component
+ * @param {ElementDefinitionOptions=} options
+ */
+function define(tagName, component, options) {
+	try {
+		customElements.define(tagName, component, options)
+	} catch (err) {
+		/** @type {string} */
+		const str = err.toString()
+		if (str.includes("CustomElementRegistry.define")) location.reload()
+	}
+}
